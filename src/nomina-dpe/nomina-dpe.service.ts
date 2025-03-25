@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class NominaDpeService {
   async procesarDatos(lineas: string[][], periodoDpe: string) {
+    console.log(periodoDpe);
     const lotes: any[] = [];
     let datosProcesados: any[] = [];
     let contador = 0;
@@ -39,7 +40,7 @@ export class NominaDpeService {
         periodoDPE: periodoDpe,
         numCuenta: valores[16] || '',
         nomBanco: valores[17] || '',
-        fechaDeposito: fechaDeposito,
+        fechaDeposito: fechaDeposito || '',
       };
 
       datosProcesados.push(objeto);
@@ -59,6 +60,12 @@ export class NominaDpeService {
     console.log(
       `✅ Datos procesados en ${lotes.length} lotes de 5,000 registros.`,
     );
+    // console.log(lotes[0]);
     return lotes;
+  }
+
+  async guardarDatos(datos: any[]) {
+    console.log('Guardando datos...');
+    console.log(datos.length);
   }
 }
