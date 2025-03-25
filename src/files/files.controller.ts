@@ -37,16 +37,13 @@ export class FilesController {
     console.log('Periodo DPE:', periodoDpe);
     try {
       const lineas = await this.filesService.leerArchivo();
-      const lotes = await this.nominaDpeService.procesarDatos(
+      const resp = await this.nominaDpeService.procesarDatos(
         lineas,
         periodoDpe,
       );
-      await this.nominaDpeService.guardarDatos(lotes);
+      
 
-      return {
-        message: 'Archivo procesado y datos guardados exitosamente.',
-        totalLotes: lotes.length,
-      };
+      return resp;
     } catch (error) {
       console.error('Error al procesar el archivo:', error);
       return {
