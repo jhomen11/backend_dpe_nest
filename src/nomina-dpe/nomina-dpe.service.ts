@@ -13,7 +13,8 @@ export class NominaDpeService {
   async procesarDatos(lineas: string[][], periodoDpe: string) {
     console.log(periodoDpe);
   
-    const BATCH_SIZE = 5000; // 🔥 Lotes más pequeños para evitar consumo de memoria
+    //* Tamaño de los lotes a insertar
+    const BATCH_SIZE = 5000; 
     let batch: any[] = [];
     
     console.log('⏳ Eliminando datos previos...');
