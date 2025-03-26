@@ -1,8 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-@Schema()
-export class NominaDpe extends Document {
+export type ImportDpeDocument = ImportDpe & Document;
+
+@Schema({ collection: 'importdpe', versionKey: false })
+export class ImportDpe {
   @Prop() rut: string;
   @Prop() dv: string;
   @Prop() tipoDevolucion: string;
@@ -20,10 +22,10 @@ export class NominaDpe extends Document {
   @Prop() email: string;
   @Prop() telefono: string;
   @Prop() estado: string;
-  @Prop() periodoDpe: string;
+  @Prop() periodoDPE: string;
   @Prop() numCuenta: string;
   @Prop() nomBanco: string;
   @Prop() fechaDeposito: Date;
 }
 
-export const NominaDpeSchema = SchemaFactory.createForClass(NominaDpe);
+export const ImportDpeSchema = SchemaFactory.createForClass(ImportDpe);
