@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 
 export type ImportDpeDocument = ImportDpe & Document;
 
-@Schema({ collection: 'importdpes', versionKey: false })
+@Schema({ collection: 'importdpe', versionKey: false })
 export class ImportDpe {
   @Prop({ index: true }) rut: string;
   @Prop() dv: string;
