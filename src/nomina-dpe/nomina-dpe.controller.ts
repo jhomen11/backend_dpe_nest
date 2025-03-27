@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { NominaDpeService } from './nomina-dpe.service';
+import { CreatePropuestaDpeDto } from 'src/propuestas-dpe/dto/create-propuestaDpe.dto';
 
 @Controller('nomina-dpe')
 export class NominaDpeController {
@@ -14,8 +15,8 @@ export class NominaDpeController {
     }
     
     @Post('procesarNominaDpe')
-    async procesarNominaDpe(@Body('periodoDpe') periodoDpe: string) {
-        return this.nominaDpeService.procesarNominaDpe(periodoDpe);
+    async procesarNominaDpe(@Body() createPropuestaDpeDto: CreatePropuestaDpeDto) {
+        return this.nominaDpeService.procesarNominaDpe(createPropuestaDpeDto);
     }
 
 }

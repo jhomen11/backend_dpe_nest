@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 
 export type ImportDpeDocument = ImportDpe & Document;
 
-@Schema({ collection: 'importdpe', versionKey: false })
+@Schema({ collection: 'importdpes', versionKey: false })
 export class ImportDpe {
   @Prop({ index: true }) rut: string;
   @Prop() dv: string;
@@ -21,8 +21,8 @@ export class ImportDpe {
   @Prop() region: string;
   @Prop() email: string;
   @Prop() telefono: string;
-  @Prop({index: true}) estado: string;
-  @Prop() periodoDPE: string;
+  @Prop({ index: true }) estado: string;
+  @Prop({ index: true }) periodoDPE: string;
   @Prop() numCuenta: string;
   @Prop() nomBanco: string;
   @Prop() fechaDeposito: Date;

@@ -2,12 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { ImportDpe } from './entities/importDpe.entity';
 import { Model } from 'mongoose';
+import { PropuestaDpe } from 'src/propuestas-dpe/entities/propuestaDpe.entity';
+import { CreatePropuestaDpeDto } from 'src/propuestas-dpe/dto/create-propuestaDpe.dto';
 
 @Injectable()
 export class NominaDpeService {
   constructor(
     @InjectModel(ImportDpe.name)
     private readonly importDpeModel: Model<ImportDpe>,
+    @InjectModel(PropuestaDpe.name)
+    private readonly propuestaDpeModel: Model<PropuestaDpe>,
   ) {}
 
   async procesarDatos(lineas: string[][], periodoDpe: string) {
@@ -91,16 +95,110 @@ export class NominaDpeService {
       const año = item.slice(2);
 
       if (maxYear === '' || parseInt(año) > parseInt(maxYear)) {
-        maxYear = año; 
+        maxYear = año;
         mesMaxAño = mes;
       }
     }
     console.log('✅ Periodo dpe:', `${mesMaxAño}${maxYear}`);
-    return `${mesMaxAño}${maxYear}`;
+    return { periodoDPE: `${mesMaxAño}${maxYear}` };
   }
 
+
   // * Método para procesar la nómina
-  async procesarNominaDpe(periodoDpe: string) {
+  async procesarNominaDpe(CreatePropuestaDpeDto: CreatePropuestaDpeDto) {
+    
+    console.log(CreatePropuestaDpeDto);
+    const { periodoDpe } = CreatePropuestaDpeDto;
+
+    const BATCH_SIZE = 5000;
+    let batch: any[] = [];
+
+    console.log('⏳ Eliminando datos previos...');
+    await this.propuestaDpeModel.deleteMany({ periodoDevolucion: periodoDpe });
+    console.log('✅ Datos anteriores eliminados.');
+
+    const nominaDpe = await this.importDpeModel
+      .aggregate([
+        { $match: { periodoDPE: periodoDpe } },
+        {
+          $group: {
+            _id: {
+              rut: '$rut',
+              dv: '$dv',
+              nombre: '$nombre',
+              apelPater: '$apelPater',
+              apelMater: '$apelMater',
+              estado: '$estado',
+              periodoDevolucion: '$periodoDPE',
+              banco: '$nomBanco',
+              numeroCuenta: '$numCuenta',
+              fechaDeposito: '$fechaDeposito',
+            },
+          },
+        },
+      ]);
+
+      console.log(`${nominaDpe.length} registros obtenidos.`);
+    // console.log(nominaDpe);
+    const listado = nominaDpe.map((x) => {
+      const nombreCompleto =
+        x._id.rut < 65000000
+          ? `${x._id.nombre} ${x._id.apelPater} ${x._id.apelMater}`
+          : x._id.nombre;
+
+      return {
+        rut: x._id.rut,
+        dv: x._id.dv,
+        nombre: nombreCompleto,
+        correlativo: '1',
+        direccion: '',
+        region: '',
+        comuna: '',
+        meses: null,
+        telefono: '',
+        email: '',
+        estado: x._id.estado,
+        fechaSolrevicion: null,
+        fechaAceptacion: null,
+        montoDevolucion: null,
+        folio: '',
+        tipoPago: '',
+        periodoDevolucion: x._id.periodoDevolucion,
+        banco: x._id.banco,
+        tipoCuenta: '',
+        numeroCuenta: x._id.numeroCuenta,
+        rutaArchivo: '',
+        nombreArchivo: '',
+        fechaDeposito: x._id.fechaDeposito,
+      };
+    });
+
+    console.log('⏳ Consultando registros existentes...');
+    const existentes = await this.propuestaDpeModel.find(
+        { periodoDevolucion: periodoDpe },
+        { rut: 1, _id: 0 }
+    );
+
+    const setExistentes = new Set(existentes.map(e => e.rut));
+    console.log(`✅ ${setExistentes.size} registros ya existen.`);
+
+    for (const item of listado) {
+      if (!setExistentes.has(item.rut)) {
+          batch.push(item);
+      }
+
+      if (batch.length >= BATCH_SIZE) {
+          await this.propuestaDpeModel.insertMany(batch);
+          batch = [];
+      }
+  }
+
+  if (batch.length > 0) {
+      await this.propuestaDpeModel.insertMany(batch);
+  }
+
+  console.log('✅ Proceso finalizado.');
+   
     return { msg: `Recibido periodoDpe: ${periodoDpe}` };
   }
 }
