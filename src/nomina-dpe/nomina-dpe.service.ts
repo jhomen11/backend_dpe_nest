@@ -95,7 +95,7 @@ export class NominaDpeService {
         mesMaxAño = mes;
       }
     }
-    console.log('Datos obtenidos:', `${mesMaxAño}${maxYear}`);
+    console.log('✅ Periodo dpe:', `${mesMaxAño}${maxYear}`);
     return `${mesMaxAño}${maxYear}`;
   }
 
