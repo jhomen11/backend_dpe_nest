@@ -1,4 +1,4 @@
-import { IsOptional, IsString, IsNumber, IsInt, Min, Length } from 'class-validator';
+import { IsOptional, IsString, IsNumber, IsInt, Min, Length, ValidateIf } from 'class-validator';
 
 export class FilterPropuestaDpeDto {
   @IsOptional()
@@ -6,8 +6,8 @@ export class FilterPropuestaDpeDto {
   campo?: string | null;
 
   @IsOptional()
-  @IsString()
-  valor?: string | null;
+  @ValidateIf((o) => typeof o.valor === 'string' || typeof o.valor === 'number')
+  valor?: string | number | null;
 
   @IsString()
   limit: string;
