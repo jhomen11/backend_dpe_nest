@@ -88,6 +88,7 @@ export class NominaDpeService {
   async getPeriodoDpe() {
     console.log('⏳ Ejecutando getPeriodoDpe...');
     const datos = await this.importDpeModel.find().distinct('periodoDPE');
+    console.log(datos);
     let maxYear = '';
     let mesMaxAño = '';
     for (const item of datos) {
