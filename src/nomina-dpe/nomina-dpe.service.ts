@@ -22,7 +22,7 @@ export class NominaDpeService {
     let batch: any[] = [];
 
     console.log('⏳ Eliminando datos previos...');
-    await this.importDpeModel.deleteMany({ periodoDPE: periodoDpe }); // Eliminar datos anteriores
+    await this.importDpeModel.deleteMany({ periodoDPE: periodoDpe}); // Eliminar datos anteriores
     console.log('✅ Datos anteriores eliminados.');
 
     for (const valores of lineas) {
@@ -85,17 +85,31 @@ export class NominaDpeService {
   }
 
   // * Método para obtener el periodoDPE
+
   async getPeriodoDpe() {
     console.log('⏳ Ejecutando getPeriodoDpe...');
     const datos = await this.importDpeModel.find().distinct('periodoDPE');
     console.log(datos);
+
+    const datosValidos = datos.filter(
+      (item) => item !== null && item !== undefined && item !== '',
+    );
+    console.log('Datos válidos:', datosValidos);
+
     let maxYear = '';
     let mesMaxAño = '';
-    for (const item of datos) {
+    for (const item of datosValidos) {
       const mes = item.slice(0, 2);
       const año = item.slice(2);
 
-      if (maxYear === '' || parseInt(año) > parseInt(maxYear)) {
+      console.log(mes, año);
+
+      if (
+        maxYear === '' ||
+        parseInt(año) > parseInt(maxYear) ||
+        (parseInt(año) === parseInt(maxYear) &&
+          parseInt(mes) > parseInt(mesMaxAño))
+      ) {
         maxYear = año;
         mesMaxAño = mes;
       }
@@ -104,10 +118,8 @@ export class NominaDpeService {
     return { periodoDPE: `${mesMaxAño}${maxYear}` };
   }
 
-
   // * Método para procesar la nómina
   async procesarNominaDpe(CreatePropuestaDpeDto: CreatePropuestaDpeDto) {
-    
     console.log(CreatePropuestaDpeDto);
     const { periodoDpe } = CreatePropuestaDpeDto;
 
@@ -118,28 +130,27 @@ export class NominaDpeService {
     await this.propuestaDpeModel.deleteMany({ periodoDevolucion: periodoDpe });
     console.log('✅ Datos anteriores eliminados.');
 
-    const nominaDpe = await this.importDpeModel
-      .aggregate([
-        { $match: { periodoDPE: periodoDpe } },
-        {
-          $group: {
-            _id: {
-              rut: '$rut',
-              dv: '$dv',
-              nombre: '$nombre',
-              apelPater: '$apelPater',
-              apelMater: '$apelMater',
-              estado: '$estado',
-              periodoDevolucion: '$periodoDPE',
-              banco: '$nomBanco',
-              numeroCuenta: '$numCuenta',
-              fechaDeposito: '$fechaDeposito',
-            },
+    const nominaDpe = await this.importDpeModel.aggregate([
+      { $match: { periodoDPE: periodoDpe } },
+      {
+        $group: {
+          _id: {
+            rut: '$rut',
+            dv: '$dv',
+            nombre: '$nombre',
+            apelPater: '$apelPater',
+            apelMater: '$apelMater',
+            estado: '$estado',
+            periodoDevolucion: '$periodoDPE',
+            banco: '$nomBanco',
+            numeroCuenta: '$numCuenta',
+            fechaDeposito: '$fechaDeposito',
           },
         },
-      ]);
+      },
+    ]);
 
-      console.log(`${nominaDpe.length} registros obtenidos.`);
+    console.log(`${nominaDpe.length} registros obtenidos.`);
     // console.log(nominaDpe);
     const listado = nominaDpe.map((x) => {
       const nombreCompleto =
@@ -176,30 +187,30 @@ export class NominaDpeService {
 
     console.log('⏳ Consultando registros existentes...');
     const existentes = await this.propuestaDpeModel.find(
-        { periodoDevolucion: periodoDpe },
-        { rut: 1, _id: 0 }
+      { periodoDevolucion: periodoDpe },
+      { rut: 1, _id: 0 },
     );
 
-    const setExistentes = new Set(existentes.map(e => e.rut));
+    const setExistentes = new Set(existentes.map((e) => e.rut));
     console.log(`✅ ${setExistentes.size} registros ya existen.`);
 
     for (const item of listado) {
       if (!setExistentes.has(item.rut)) {
-          batch.push(item);
+        batch.push(item);
       }
 
       if (batch.length >= BATCH_SIZE) {
-          await this.propuestaDpeModel.insertMany(batch);
-          batch = [];
+        await this.propuestaDpeModel.insertMany(batch);
+        batch = [];
       }
-  }
+    }
 
-  if (batch.length > 0) {
+    if (batch.length > 0) {
       await this.propuestaDpeModel.insertMany(batch);
-  }
+    }
 
-  console.log('✅ Proceso finalizado.');
-   
+    console.log('✅ Proceso finalizado.');
+
     return { msg: `Recibido periodoDpe: ${periodoDpe}` };
   }
 }
