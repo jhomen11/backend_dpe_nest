@@ -9,6 +9,12 @@ export class FilterPropuestaDpeDto {
   @ValidateIf((o) => typeof o.valor === 'string' || typeof o.valor === 'number')
   valor?: string | number | null;
 
+  @IsOptional()
+  fechaDesde?: Date | null;
+
+  @IsOptional()
+  fechaHasta?: Date | null;
+
   @IsString()
   limit: string;
 

@@ -22,7 +22,7 @@ export class NominaDpeService {
     let batch: any[] = [];
 
     console.log('⏳ Eliminando datos previos...');
-    await this.importDpeModel.deleteMany({ periodoDPE: periodoDpe}); // Eliminar datos anteriores
+    await this.importDpeModel.deleteMany({ periodoDPE: periodoDpe }); // Eliminar datos anteriores
     console.log('✅ Datos anteriores eliminados.');
 
     for (const valores of lineas) {
@@ -102,8 +102,6 @@ export class NominaDpeService {
       const mes = item.slice(0, 2);
       const año = item.slice(2);
 
-      console.log(mes, año);
-
       if (
         maxYear === '' ||
         parseInt(año) > parseInt(maxYear) ||
@@ -115,7 +113,7 @@ export class NominaDpeService {
       }
     }
     console.log('✅ Periodo dpe:', `${mesMaxAño}${maxYear}`);
-    return { periodoDPE: `${mesMaxAño}${maxYear}` };
+    return `${mesMaxAño}${maxYear}`;
   }
 
   // * Método para procesar la nómina

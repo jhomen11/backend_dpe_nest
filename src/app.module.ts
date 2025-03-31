@@ -3,6 +3,7 @@ import { FilesModule } from './files/files.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { NominaDpeModule } from './nomina-dpe/nomina-dpe.module';
 import { PropuestasDpeModule } from './propuestas-dpe/propuestas-dpe.module';
+import { CalendarioModule } from './calendario/calendario.module';
 
 @Module({
   imports: [
@@ -10,6 +11,7 @@ import { PropuestasDpeModule } from './propuestas-dpe/propuestas-dpe.module';
     MongooseModule.forRoot('mongodb://localhost:27017/dbdpe'),
     NominaDpeModule,
     PropuestasDpeModule,
+    CalendarioModule,
   ],
   controllers: [],
   providers: [],

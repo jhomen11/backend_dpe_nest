@@ -12,7 +12,9 @@ export class PropuestasDpeService {
   ) {}
 
   async listarPropuestasDpe(filterPropuestaDpeDto: FilterPropuestaDpeDto) {
-    const { campo, valor, limit, page, periodo } = filterPropuestaDpeDto;
+    const { campo, valor, limit, page, periodo, fechaDesde, fechaHasta } = filterPropuestaDpeDto;
+
+    console.log(campo, valor, limit, page, periodo, fechaDesde ?? "", fechaHasta ?? "");
 
     let propuestas: PropuestaDpe[] = [];
 
@@ -20,6 +22,19 @@ export class PropuestasDpeService {
     if (campo && valor) {
       filtro[campo] = valor;
     }
+
+    if (fechaDesde || fechaHasta) {
+      filtro.fechaAceptacion = {};
+      if (fechaDesde) {
+        filtro.fechaAceptacion.$gte = new Date(fechaDesde);
+      }
+      if (fechaHasta) {
+        filtro.fechaAceptacion.$lte = new Date(fechaHasta);
+      }
+    }
+
+
+    console.log(filtro);
 
 
     propuestas = await this.propuestaDpeModel

@@ -24,7 +24,7 @@ export class PropuestaDpe {
   @Prop({ index: true }) estado: string;
 
   @Prop()  fechaSolrevicion: Date;
-  @Prop()  fechaAceptacion: Date;
+  @Prop({ index: true})  fechaAceptacion: Date;
   @Prop()  montoDevolucion: number;
   @Prop()  folio: string;
   @Prop()  tipoPago: string;
