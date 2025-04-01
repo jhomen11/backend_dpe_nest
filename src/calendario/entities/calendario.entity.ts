@@ -4,7 +4,7 @@ export type CalendarioDocument = Calendario & Document;
 @Schema({ collection: 'calendarios', versionKey: false })
 export class Calendario {
 
-    @Prop()
+    @Prop({required: true, unique: true})
     periodoDPE: string;
     @Prop()
     fechaInicio: Date;

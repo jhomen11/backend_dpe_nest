@@ -17,11 +17,17 @@ export class CalendarioController {
 
   @Post()
   create(@Body() createCalendarioDto: CreateCalendarioDto) {
+    console.log(createCalendarioDto)
     return this.calendarioService.crearPeriodoDpe(createCalendarioDto);
   }
 
-  @Get()
-  getCalendario() {
-    return this.calendarioService.getCalendario();
+  @Get('getNuevoPeriodoDpe')
+  getNuevoPeriodoDpe() {
+    return this.calendarioService.getNuevoPeriodoDpe();
+  }
+
+  @Get('getCalendario')
+  async getCalendario() {
+    return await this.calendarioService.getCalendario();
   }
 }

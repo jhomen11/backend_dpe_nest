@@ -84,37 +84,6 @@ export class NominaDpeService {
     return { msg: 'Datos guardados correctamente' };
   }
 
-  // * Método para obtener el periodoDPE
-
-  async getPeriodoDpe() {
-    console.log('⏳ Ejecutando getPeriodoDpe...');
-    const datos = await this.importDpeModel.find().distinct('periodoDPE');
-    console.log(datos);
-
-    const datosValidos = datos.filter(
-      (item) => item !== null && item !== undefined && item !== '',
-    );
-    console.log('Datos válidos:', datosValidos);
-
-    let maxYear = '';
-    let mesMaxAño = '';
-    for (const item of datosValidos) {
-      const mes = item.slice(0, 2);
-      const año = item.slice(2);
-
-      if (
-        maxYear === '' ||
-        parseInt(año) > parseInt(maxYear) ||
-        (parseInt(año) === parseInt(maxYear) &&
-          parseInt(mes) > parseInt(mesMaxAño))
-      ) {
-        maxYear = año;
-        mesMaxAño = mes;
-      }
-    }
-    console.log('✅ Periodo dpe:', `${mesMaxAño}${maxYear}`);
-    return `${mesMaxAño}${maxYear}`;
-  }
 
   // * Método para procesar la nómina
   async procesarNominaDpe(CreatePropuestaDpeDto: CreatePropuestaDpeDto) {

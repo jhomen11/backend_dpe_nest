@@ -7,12 +7,6 @@ export class NominaDpeController {
     constructor(
         private readonly nominaDpeService: NominaDpeService,
     ) {}
-
-
-    @Get('getPeriodoDpe')
-    async getPeriodoDpe() {
-        return this.nominaDpeService.getPeriodoDpe();
-    }
     
     @Post('procesarNominaDpe')
     async procesarNominaDpe(@Body() createPropuestaDpeDto: CreatePropuestaDpeDto) {

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateCalendarioDto } from './dto/create-calendario.dto';
@@ -15,17 +15,89 @@ export class CalendarioService {
   ) {}
 
   async crearPeriodoDpe(createCalendarioDto: CreateCalendarioDto) {
-    const calendarioDocs = await this.getCalendario();
-    const ultimoPeriodoDpe: CreateCalendarioDto = calendarioDocs.map(doc => ({
-      periodoDPE: doc.periodoDPE,
-      fechaInicio: doc.fechaInicio,
-      fechaCierre: doc.fechaCierre,
-    }))[0]; // Assuming you want the first item
-    return ultimoPeriodoDpe.periodoDPE;
+
+    try {
+      const nuevoCalendario = await this.calendarioModel.create(createCalendarioDto);
+      return nuevoCalendario;
+      
+    } catch (error) {
+      if (error.code === 11000) {
+        console.log('El periodo ya existe en la base de datos.');
+        throw new BadRequestException('El periodo ya existe en la base de datos.');
+      }
+    }
+  }
+
+  // * Método para obtener el nuevo periodoDPE
+  async getNuevoPeriodoDpe() {
+    const datos = await this.calendarioModel.find({});
+
+    const datosValidos = datos.filter(
+      (item) => item && Object.keys(item).length > 0,
+    );
+
+    let maxYear = '';
+    let mesMaxAño = '';
+
+    for (const item of datosValidos) {
+      const mes = item.periodoDPE.slice(0, 2);
+      const año = item.periodoDPE.slice(2);
+
+      if (
+        maxYear === '' ||
+        parseInt(año) > parseInt(maxYear) ||
+        (parseInt(año) === parseInt(maxYear) &&
+          parseInt(mes) > parseInt(mesMaxAño))
+      ) {
+        maxYear = año;
+        mesMaxAño = mes;
+      }
+    }
+    // Determinar el próximo periodo
+    let nuevoMes = '';
+    let nuevoAño = parseInt(maxYear);
+
+    if (mesMaxAño === '03') {
+      nuevoMes = '09';
+    } else if (mesMaxAño === '09') {
+      nuevoMes = '03';
+      nuevoAño += 1;
+    }
+    const proximoPeriodo = `${nuevoMes}${nuevoAño}`;
+    console.log('✅ Próximo periodo:', proximoPeriodo);
+
+    return proximoPeriodo;
   }
 
   async getCalendario() {
-    return this.calendarioModel.find();
-  }
+    const datos = await this.calendarioModel.find({});
+    const datosValidos = datos.filter(
+      (item) => item && Object.keys(item).length > 0,
+    );
 
+    let maxYear = '';
+    let mesMaxAño = '';
+
+    for (const item of datosValidos) {
+      const mes = item.periodoDPE.slice(0, 2);
+      const año = item.periodoDPE.slice(2);
+
+      if (
+        maxYear === '' ||
+        parseInt(año) > parseInt(maxYear) ||
+        (parseInt(año) === parseInt(maxYear) &&
+          parseInt(mes) > parseInt(mesMaxAño))
+      ) {
+        maxYear = año;
+        mesMaxAño = mes;
+      }
+    }
+    const fechaFiltro = `${mesMaxAño}${maxYear}`;
+    console.log('✅ Fecha filtro:', fechaFiltro);
+    const calendario = datosValidos.filter(
+      (item) => item.periodoDPE === fechaFiltro,
+    );
+
+    return calendario;
+  }
 }
