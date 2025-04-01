@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import { CreateCalendarioDto } from './dto/create-calendario.dto';
 import { UpdateCalendarioDto } from './dto/update-calendario.dto';
 import { Calendario } from './entities/calendario.entity';
-import { NominaDpeService } from '../nomina-dpe/nomina-dpe.service';
+import { NominaDpeService } from '../modules/nomina-dpe/nomina-dpe.service';
 
 @Injectable()
 export class CalendarioService {

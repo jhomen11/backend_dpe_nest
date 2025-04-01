@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { ImportDpe } from './entities/importDpe.entity';
 import { Model } from 'mongoose';
-import { PropuestaDpe } from 'src/propuestas-dpe/entities/propuestaDpe.entity';
-import { CreatePropuestaDpeDto } from 'src/propuestas-dpe/dto/create-propuestaDpe.dto';
+import { PropuestaDpe } from 'src/modules/propuestas-dpe/entities/propuestaDpe.entity';
+import { CreatePropuestaDpeDto } from 'src/modules/propuestas-dpe/dto/create-propuestaDpe.dto';
 
 @Injectable()
 export class NominaDpeService {

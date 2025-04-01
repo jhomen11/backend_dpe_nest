@@ -8,8 +8,8 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FilesService } from './files.service';
 import { diskStorage } from 'multer';
-import { NominaDpeService } from 'src/nomina-dpe/nomina-dpe.service';
-import { CreateNominaDpeDto } from 'src/nomina-dpe/dto/create-nominaDpe.dto';
+import { NominaDpeService } from 'src/modules/nomina-dpe/nomina-dpe.service';
+import { CreateNominaDpeDto } from 'src/modules/nomina-dpe/dto/create-nominaDpe.dto';
 
 @Controller('files')
 export class FilesController {

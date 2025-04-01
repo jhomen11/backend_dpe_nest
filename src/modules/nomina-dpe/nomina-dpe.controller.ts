@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { NominaDpeService } from './nomina-dpe.service';
-import { CreatePropuestaDpeDto } from 'src/propuestas-dpe/dto/create-propuestaDpe.dto';
+import { CreatePropuestaDpeDto } from 'src/modules/propuestas-dpe/dto/create-propuestaDpe.dto';
 
 @Controller('nomina-dpe')
 export class NominaDpeController {

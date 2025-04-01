@@ -3,7 +3,7 @@ import { NominaDpeService } from './nomina-dpe.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ImportDpe, ImportDpeSchema } from './entities/importDpe.entity';
 import { NominaDpeController } from './nomina-dpe.controller';
-import { PropuestaDpe, PropuestaDpeSchema } from 'src/propuestas-dpe/entities/propuestaDpe.entity';
+import { PropuestaDpe, PropuestaDpeSchema } from 'src/modules/propuestas-dpe/entities/propuestaDpe.entity';
 
 @Module({
   exports: [NominaDpeService, MongooseModule],

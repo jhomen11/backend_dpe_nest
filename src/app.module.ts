@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { FilesModule } from './files/files.module';
 import { MongooseModule } from '@nestjs/mongoose';
-import { NominaDpeModule } from './nomina-dpe/nomina-dpe.module';
-import { PropuestasDpeModule } from './propuestas-dpe/propuestas-dpe.module';
-import { CalendarioModule } from './calendario/calendario.module';
+import { FilesModule } from './modules/files/files.module';
+import { NominaDpeModule } from './modules/nomina-dpe/nomina-dpe.module';
+import { PropuestasDpeModule } from './modules/propuestas-dpe/propuestas-dpe.module';
+import { CalendarioModule } from './modules/calendario/calendario.module';
 
 @Module({
   imports: [
