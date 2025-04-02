@@ -15,9 +15,8 @@ import { UpdateCalendarioDto } from './dto/update-calendario.dto';
 export class CalendarioController {
   constructor(private readonly calendarioService: CalendarioService) {}
 
-  @Post()
+  @Post('crearPeriodoDpe')
   create(@Body() createCalendarioDto: CreateCalendarioDto) {
-    console.log(createCalendarioDto)
     return this.calendarioService.crearPeriodoDpe(createCalendarioDto);
   }
 
